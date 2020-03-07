@@ -1,7 +1,6 @@
 import re
 import os
 from typing import Pattern
-import matplotlib
 import matplotlib.pyplot as plt
 
 
@@ -25,6 +24,7 @@ def get_files_from_dir(pattern: Pattern, directory: str):
 
 def compute_elevation(text_lines):
     # todo convert tabs to spaces before performing operation
+    # todo should this be a generator?
     symbol_pattern = r"^(\s*)"
     for line in text_lines:
         match = re.search(symbol_pattern, line)
@@ -54,7 +54,6 @@ def main():
     ax.set_ylabel("code elevation")
     ax.set_title("Code elevation")
     ax.legend()
-    # fig.save("myimage.png")
     plt.savefig("myimage.png")
 
 
