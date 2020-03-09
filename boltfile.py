@@ -1,7 +1,10 @@
+import sys
+
 import bolt
 import subprocess
 
 
+# todo add mypy check & doctest
 config = {
     "runtest": {},
     "black": {},
@@ -9,11 +12,15 @@ config = {
     "conttest": {"task": "execute", "directory": "."},
 }
 
+if sys.platform.startswith("win32"):
+    PYTHON_CMD = ["py", "-3"]
+else:
+    PYTHON_CMD = ["python3"]
+
 
 def output_result(result, tool_name: str):
     """
     Output result of subprocess.run() for a given tool
-
     :type result: subprocess.CompletedProcess
     """
     stdout = result.stdout.decode("utf-8")
@@ -32,14 +39,15 @@ def black_task(**_):
 
 def flake8_task(**_):
     result = subprocess.run(
-        ["python3", "-m", "flake8", ".", "--exclude=.venv", "--ignore=E501"],
+        # , "--exclude=.venv"
+        [*PYTHON_CMD, "-m", "flake8", ".", "--ignore=E501,W503,W293"],
         capture_output=True,
     )
     output_result(result, "Flake8")
 
 
 def runtest_task(**_):
-    result = subprocess.run(["python3", "-m", "pytest", "tests"], capture_output=True)
+    result = subprocess.run([*PYTHON_CMD, "-m", "pytest", "tests"], capture_output=True)
     output_result(result, "Pytest")
 
 
